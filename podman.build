@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# podman build -t flyway-clickhouse . 2>&1 | tee build.log
+
+set -xe
+
+# That is allow to override tag on run, like:
+# TAG=20220214 ./build.sh
+: ${TAG:=${CI_COMMIT_TAG}_$(date +'%Y%m%d_%H%M%S')}
+echo "Building TAG=${TAG}"
+
+IMAGE="quay.io/hubbitus/flyway-clickhouse"
+
+podman build -t "${IMAGE}:${TAG}" -t "${IMAGE}:latest" .
+
+if [[ "$1" ]]; then
+  echo "Also pushing image [${IMAGE}:${TAG}], [${IMAGE}:latest]"
+  podman push "${IMAGE}:${TAG}" "${IMAGE}:latest"
+fi
