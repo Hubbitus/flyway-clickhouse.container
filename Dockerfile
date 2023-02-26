@@ -42,6 +42,7 @@ FROM docker.io/eclipse-temurin:17-jre-alpine
 RUN apk --no-cache add --update bash
 COPY --from=builder /flyway /flyway
 
+WORKDIR /flyway
 ENV PATH="/flyway:${PATH}"
 
 ENTRYPOINT ["flyway"]
