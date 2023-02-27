@@ -37,6 +37,10 @@ RUN cd /flyway \
 		&& chmod -R a+r /flyway \
 		&& chmod a+x /flyway/flyway
 
+# Workaround of annoyed SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder"
+# See https://github.com/flyway/flyway/issues/3453#issuecomment-1147448690
+RUN rm -vf /flyway/lib/aad/slf4j-api-*.jar
+
 # 2) Target image
 FROM docker.io/eclipse-temurin:17-jre-alpine
 RUN apk --no-cache add --update bash

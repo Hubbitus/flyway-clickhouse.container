@@ -21,4 +21,4 @@ podman run --rm -it --name flyway \
             -user=default -password='' -url=jdbc:clickhouse://default@127.0.0.1:8123/datamart migrate
 ```
 
-Off course, you may omit name, network mode or run it in kubernetes, as you wish.
+Off course, you may omit name, network mode or run it in Kubernetes, as you wish.
