@@ -9,7 +9,10 @@ RUN apk --no-cache add --update bash git
 
 WORKDIR /flyway
 
-ENV FLYWAY_VERSION=9.15.1
+ENV FLYWAY_VERSION=9.15.2
+
+# Hack of resolve conflicts https://github.com/flyway/flyway/pull/3611#issuecomment-1457006906!
+COPY pom.xml /flyway/pom.xml
 
 # Build with Clickhouse support!
 # See https://kb.altinity.com/altinity-kb-setup-and-maintenance/schema-migration-tools/
@@ -22,8 +25,8 @@ RUN cd flyway.git \
 	&& git checkout --progress sazonov/clickhouse-support \
 		&& git config --global user.email "Pahan@Hubbitus.info" \
 		&& git config --global user.name "Pavel Alexeev" \
-	&& git pull --no-rebase --no-edit origin main \
-		&& sed -i 's#ENGINE = StripeLog;#ENGINE = MergeTree PRIMARY KEY version;#g;s#version Nullable(String)#version String#g' flyway-community-db-support/src/main/java/org/flywaydb/community/database/clickhouse/ClickHouseDatabase.java `# See https://github.com/flyway/flyway/pull/3611/files#r1118120672`
+	&& git pull --no-rebase --no-edit origin main || : \
+		&& mv /flyway/pom.xml flyway-community-db-support/pom.xml `# Conflict rexolve hack! https://github.com/flyway/flyway/pull/3611#issuecomment-1457006906`
 
 RUN cd flyway.git \
 	&& ./mvnw install -Pbuild-assemblies-no-jre

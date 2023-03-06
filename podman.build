@@ -9,7 +9,7 @@ set -xe
 : ${TAG:=${CI_COMMIT_TAG}_$(date +'%Y%m%d_%H%M%S')}
 echo "Building TAG=${TAG}"
 
-IMAGE="quay.io/hubbitus/flyway-clickhouse"
+IMAGE='docker.io/hubbitus/flyway-clickhouse'
 
 podman build -t "${IMAGE}:${TAG}" -t "${IMAGE}:latest" .
 
