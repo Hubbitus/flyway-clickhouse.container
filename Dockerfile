@@ -43,7 +43,7 @@ RUN rm -vf /flyway/lib/aad/slf4j-api-*.jar
 
 # 2) Target image
 FROM docker.io/eclipse-temurin:17-jre-alpine
-RUN apk --no-cache add --update bash
+RUN apk --no-cache add --update bash vault
 COPY --from=builder /flyway /flyway
 
 WORKDIR /flyway
