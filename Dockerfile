@@ -26,7 +26,7 @@ RUN cd flyway.git \
 		&& git config --global user.email "Pahan@Hubbitus.info" \
 		&& git config --global user.name "Pavel Alexeev" \
 	&& git pull --no-rebase --no-edit origin main || : \
-		&& mv /flyway/pom.xml flyway-community-db-support/pom.xml `# Conflict rexolve hack! https://github.com/flyway/flyway/pull/3611#issuecomment-1457006906`
+		&& mv /flyway/pom.xml flyway-community-db-support/pom.xml `# Conflict resolve hack! https://github.com/flyway/flyway/pull/3611#issuecomment-1457006906`
 
 RUN cd flyway.git \
 	&& ./mvnw install -Pbuild-assemblies-no-jre
