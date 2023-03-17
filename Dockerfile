@@ -44,8 +44,9 @@ RUN rm -vf /flyway/lib/aad/slf4j-api-*.jar
 
 # 2) Target image
 FROM docker.io/eclipse-temurin:17-jre-alpine
-RUN apk --no-cache add --update bash vault
-COPY --from=builder /flyway /flyway
+
+RUN apk --no-cache add --update bash vault libcap \
+  && setcap cap_ipc_lock= $(readlink -f $(which vault))
 
 WORKDIR /flyway
 ENV PATH="/flyway:${PATH}"
