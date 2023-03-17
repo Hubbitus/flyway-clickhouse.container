@@ -1,5 +1,3 @@
-LABEL maintainer="Pavel Alexeev <plalexeev@gid.ru>"
-
 # 1) Build
 FROM docker.io/eclipse-temurin:17-jdk-alpine as builder
 
@@ -44,6 +42,8 @@ RUN rm -vf /flyway/lib/aad/slf4j-api-*.jar
 
 # 2) Target image
 FROM docker.io/eclipse-temurin:17-jre-alpine
+
+LABEL maintainer="Pavel Alexeev <plalexeev@gid.ru>"
 
 RUN apk --no-cache add --update bash vault libcap \
   && setcap cap_ipc_lock= $(readlink -f $(which vault))
