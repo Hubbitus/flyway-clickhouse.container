@@ -1,3 +1,5 @@
+LABEL maintainer="PAvel Alexeev <plalexeev@gid.ru>"
+
 # 1) Build
 FROM docker.io/eclipse-temurin:17-jdk-alpine as builder
 
@@ -9,7 +11,7 @@ RUN apk --no-cache add --update bash git
 
 WORKDIR /flyway
 
-ENV FLYWAY_VERSION=9.15.2
+ENV FLYWAY_VERSION=9.16.0
 
 # Hack of resolve conflicts https://github.com/flyway/flyway/pull/3611#issuecomment-1457006906!
 COPY pom.xml /flyway/pom.xml
