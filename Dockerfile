@@ -5,15 +5,11 @@ FROM docker.io/eclipse-temurin:17-jdk-alpine as builder
 
 RUN apk --no-cache add --update bash git
 
-#? RUN apk --no-cache add --update bash openssl git
-#? RUN apk --no-cache add --update python3 py3-pip \
-#?    && pip3 install sqlfluff==1.2.1
-
 WORKDIR /flyway
 
 ENV FLYWAY_VERSION=9.16.0
 
-# Hack of resolve conflicts https://github.com/flyway/flyway/pull/3611#issuecomment-1457006906!
+# Hack of resolving conflicts https://github.com/flyway/flyway/pull/3611#issuecomment-1457006906!
 COPY pom.xml /flyway/pom.xml
 
 # Build with Clickhouse support!
@@ -22,7 +18,7 @@ COPY pom.xml /flyway/pom.xml
 RUN git clone --progress --depth=50 --filter=blob:none https://github.com/flyway/flyway.git flyway.git
 
 RUN cd flyway.git \
-	&& git remote add sazonov https://github.com/sazonov/flyway.git `# Build with Clickhouse support!` \
+	&& git remote add sazonov https://github.com/sazonov/flyway.git \
 	&& git fetch --progress --depth=50 --filter=blob:none sazonov \
 	&& git checkout --progress sazonov/clickhouse-support \
 		&& git config --global user.email "Pahan@Hubbitus.info" \
