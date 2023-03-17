@@ -1,4 +1,4 @@
-LABEL maintainer="PAvel Alexeev <plalexeev@gid.ru>"
+LABEL maintainer="Pavel Alexeev <plalexeev@gid.ru>"
 
 # 1) Build
 FROM docker.io/eclipse-temurin:17-jdk-alpine as builder
