@@ -2,6 +2,8 @@
 
 # podman build -t flyway-clickhouse . 2>&1 | tee build.log
 
+exec &> >( ts '%d-%H:%M:%.S' | ts -i -- '+%H:%M:%.S' | tee -i -- "$(basename $0).$(date --iso-8601=s).log" )
+
 set -xe
 
 # That is allow to override tag on run, like:

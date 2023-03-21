@@ -1,0 +1,12 @@
+stages:
+  - build
+  - deploy
+build:
+  image: quay.io/podman/stable:v4.3
+  stage: build
+  before_script:
+    - export IMAGE_TAG=${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-$(date +%Y%m%d%H%M%S)
+  script:
+    - podman login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - podman build -t $IMAGE_TAG .
+    - podman push $IMAGE_TAG
