@@ -5,27 +5,30 @@ RUN apk --no-cache add --update bash git
 
 WORKDIR /flyway
 
-ENV FLYWAY_VERSION=9.16.0
+ENV FLYWAY_VERSION=9.16.1
 
 # Hack of resolving conflicts https://github.com/flyway/flyway/pull/3611#issuecomment-1457006906!
-COPY pom.xml /flyway/pom.xml
-
+#COPY pom.xml /flyway/pom.xml
 # Build with Clickhouse support!
 # See https://kb.altinity.com/altinity-kb-setup-and-maintenance/schema-migration-tools/
 #  => https://github.com/flyway/flyway/pull/3611
-RUN git clone --progress --depth=50 --filter=blob:none https://github.com/flyway/flyway.git flyway.git
+#RUN git clone --progress --depth=50 --filter=blob:none https://github.com/flyway/flyway.git flyway.git
+#RUN cd flyway.git \
+#	&& git remote add sazonov https://github.com/sazonov/flyway.git \
+#	&& git fetch --progress --depth=50 --filter=blob:none sazonov \
+#	&& git checkout --progress sazonov/clickhouse-support \
+#		&& git config --global user.email "Pahan@Hubbitus.info" \
+#		&& git config --global user.name "Pavel Alexeev" \
+#	&& git pull --no-rebase --no-edit origin main || : \
+#		&& mv /flyway/pom.xml flyway-community-db-support/pom.xml `# Conflict resolve hack! https://github.com/flyway/flyway/pull/3611#issuecomment-1457006906`
+
+###########
+# My repo of hacks: https://github.com/Hubbitus/flyway, branch https://github.com/Hubbitus/flyway/tree/HU-clickhouse-support
+# Unfortunately there is work in progress and some changes made by me (e.g. https://github.com/flyway/flyway/pull/3611/files#r1143430085)
+RUN git clone --progress --depth=50 --filter=blob:none -b HU-clickhouse-support https://github.com/Hubbitus/flyway.git flyway.git
 
 RUN cd flyway.git \
-	&& git remote add sazonov https://github.com/sazonov/flyway.git \
-	&& git fetch --progress --depth=50 --filter=blob:none sazonov \
-	&& git checkout --progress sazonov/clickhouse-support \
-		&& git config --global user.email "Pahan@Hubbitus.info" \
-		&& git config --global user.name "Pavel Alexeev" \
-	&& git pull --no-rebase --no-edit origin main || : \
-		&& mv /flyway/pom.xml flyway-community-db-support/pom.xml `# Conflict resolve hack! https://github.com/flyway/flyway/pull/3611#issuecomment-1457006906`
-
-RUN cd flyway.git \
-	&& ./mvnw install -Pbuild-assemblies-no-jre
+	&& ./mvnw clean install -Pbuild-assemblies-no-jre
 
 RUN cd /flyway \
 	&& tar -zxvf flyway.git/flyway-commandline/target/flyway-commandline-${FLYWAY_VERSION}.tar.gz --strip-components=1 \
@@ -44,6 +47,8 @@ RUN rm -vf /flyway/lib/aad/slf4j-api-*.jar
 FROM docker.io/eclipse-temurin:17-jre-alpine
 
 LABEL maintainer="Pavel Alexeev <plalexeev@gid.ru>"
+
+COPY --from=builder /flyway /flyway
 
 RUN apk --no-cache add --update bash vault libcap \
   && setcap cap_ipc_lock= $(readlink -f $(which vault))
